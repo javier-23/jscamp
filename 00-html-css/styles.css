@@ -1,0 +1,41 @@
+:root {
+  --background: #101922;
+  --text-primary: #fff;
+  --card-bg: #1e2e3d;
+  --primary-light: #4fc3f7;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+}
+
+article {
+  background-color: var(--card-bg);
+  padding: 2rem;
+  margin-bottom: 16px;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 var(--shadow);
+  text-align: center;
+}
+
+article svg {
+  color: var(--primary-light);
+  background: #0153;
+  border-radius: 100%;
+  width: 64px;
+  height: 64px;
+  padding: 1rem;
+}
+
