@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevJobs - Empleos</title>
+    <meta name="description" content="Encuentra las mejores ofertas de trabajo para desarrolladores en DevJobs.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        
+        <h1>
+            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>    
+            DevJobs
+        </h1>
+
+        <nav>
+            <!--
+            <a href="./index.html">Inicio</a>
+            -->
+            <a href="../01-javascript/empleos.html">Empleos</a>
+        </nav>
+
+        <div>
+            <button> Publicar un empleo </button>
+            <!--<button>Iniciar sesión</button>-->
+        </div>
+    </header>
+
+    <main>
+
+        <section class="seccion-busqueda-empleos">
+            <h1>Encuentra tu próximo trabajo</h1>
+            <p>Explora las ofertas de empleo más recientes y encuentra el trabajo ideal para ti.</p>
+
+            <form role="search">
+                <div class="barra-busqueda-empleo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                    <input type="text" placeholder="Buscar trabajos, empresas o habilidades" />
+                </div>
+
+                <div class="filtros-busqueda-empleo">
+                    <select name="tecnologia" id="filtro-tecnologia">
+                        <option value="">Tecnología</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="java">Java</option>
+                        <option value="react">React</option>
+                        <option value="nodejs">Node.js</option>
+                    </select>
+
+                    <select name="location" id="location">
+                        <option value="">Ubicación</option>
+                        <option value="remote">Remoto</option>
+                        <option value="onsite">Presencial</option>
+                        <option value="hybrid">Híbrido</option>
+                        <option value="nuevayork">Nueva York</option>
+                        <option value="madrid">Madrid</option>
+                        <option value="londres">Londres</option>
+                    </select>
+
+                    <select name="experience-level" id="experience-level">
+                        <option value="">Nivel de experiencia</option>
+                        <option value="junior">Junior</option>
+                        <option value="mid">Mid-level</option>
+                        <option value="senior">Senior</option>
+                        <option value="lead">Lead</option>
+                    </select>
+                </div>
+            </form>
+        </section>
+    </main>
+
+</body>
+
+</html>
