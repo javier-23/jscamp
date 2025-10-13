@@ -2,7 +2,7 @@
   --background: #101922;
   --text-primary: #fff;
   --card-bg: #1e293b;
-  --primary-light: #4fc3f7;
+  --primary-light: #09f;
   --text-light: rgb(154, 154, 154);
   --shadow: #0008;
   --input-bg: #15232e;
@@ -102,6 +102,10 @@ main > section:nth-child(1) {
   h1 + p{
     margin-bottom: 1rem;
   }
+
+  h1{
+    font-size: 3rem;
+  }
 }
 
 main > section:nth-child(2){
@@ -156,12 +160,6 @@ main > section:nth-child(2){
         margin-bottom: 0.5rem;
       }
     }
-  }
-}
-
-main > section:nth-child(1){
-  h1{
-    font-size: 3rem;
   }
 }
 
@@ -229,4 +227,139 @@ body > footer{
   font-size: medium;
   color: var(--text-light);
 }
+
+/* Página empleos */
+
+.seccion-busqueda-empleos{
+  margin-top: 2rem;
+  height: auto !important;
+
+  p{
+    color:var(--text-light);
+    margin-bottom: 2rem !important;    
+  }
+
+  form{
+    max-width: 1280px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: none;
+    box-shadow: none;
+
+    .barra-busqueda-empleo {
+      background: var(--input-bg);
+      padding: 1rem 1rem;
+      border: rgba(128, 128, 128, 0.263) 1px solid;
+      border-radius: .5rem;
+      width: 100%;
+
+    }
+
+    .filtros-busqueda-empleo{
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      gap: 1rem;
+
+      select{
+        background-color: var(--button-bg);
+        border-radius: 0.5rem;
+        border: none;
+        color: var(--text-primary);
+        padding: 0.5rem;;
+        font-size: 1rem;
+        font-family: inherit;
+        cursor: pointer;
+
+      }
+    }
+  }
+}
+
+.seccion-resultados-empleos{
+  
+  max-width: 1280px;
+  margin: 0 auto;
+  margin-top: 0.5rem !important;
+  display: flex;
+  flex-direction: column;
+
+  h2{
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  .jobs-listings{
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    
+    article{
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .3);
+      display: flex;
+      text-align: left;
+
+      div{
+        flex-direction: column;
+        margin-right: 2rem;
+
+        small{
+          font-size: .875rem;
+          opacity: .75;
+        }
+
+        p{
+          margin-top: 0.5rem;
+        }
+      }
+
+      button{
+        height: 40px;
+        margin-right: 1rem;
+        background-color: rgb(22, 124, 207);
+
+        &:hover{
+          background-color: rgb(2, 101, 165);
+        }
+      }
+    }
+
+    article:last-child{
+      border-bottom: none;
+    }
+  }
+
+  .paginacion{
+
+    display: flex;
+    gap: 1rem;
+    margin: 2rem 0;
+
+    a{
+      text-decoration: none;
+      color: var(--text-primary);
+      width: 2.5rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.375rem;
+      transition: all .3s;
+
+      &.is-active {
+        background-color: var(--primary-light);
+        pointer-events: none;
+      }
+
+      &:active {
+        transform: scale(0.90);
+      }
+    }
+  }
+}
+
 
