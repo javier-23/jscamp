@@ -431,7 +431,7 @@ body > footer{
   .job-description, .title-and-button, 
   .job-responsibilities, .job-requirements, .company-info{
     margin: 1rem 0 1rem;
-    max-width: 1280px;
+    max-width: 1000px;
     width: 100%;
 
     svg{
@@ -450,23 +450,22 @@ body > footer{
     display: flex;
     flex-direction: row;
     align-items: center;
-    text-align: left;
-    margin: 0;
-    padding: 0;
+    height: auto;
+    justify-content: space-between;
 
-    div{
+    .title-subtitle{
       flex-direction: column;
       margin-right: 2rem;
+      text-align: left;
 
       small{
-        font-size: .875rem;
+        font-size: 1.1rem;
         opacity: .75;
       }
     }
 
     button{
       height: 40px;
-      margin-right: 1rem;
 
       &:hover{
         background-color: rgb(2, 101, 165);
@@ -483,12 +482,19 @@ body > footer{
   }
 
   .company-info{
-    border-bottom: 1px solid var(--primary-light);
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
   }
 
   .apply-button-end{
     display: flex;
-    flex-direction: row-reverse;
+    justify-content: flex-end;
+    max-width: 1000px;
+    width: 100%;
+
+    button:hover{
+        background-color: rgb(2, 101, 165);
+      }
   }
 }
 
