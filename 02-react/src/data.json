@@ -90,7 +90,7 @@
     "ubicacion": "Madrid",
     "descripcion": "Estamos buscando un Product Manager con experiencia en la definición y lanzamiento de productos digitales. Se requiere capacidad analítica, liderazgo y conocimiento en metodologías ágiles.",
     "data": {
-      "technology": "mobile",
+      "technology": "node",
       "modalidad": "madrid",
       "nivel": "senior"
     }
@@ -138,7 +138,7 @@
     "ubicacion": "Lima",
     "descripcion": "Se busca ingeniero de QA con experiencia en automatización de pruebas utilizando herramientas como Selenium, Cypress o Playwright. Conocimiento deseado en CI/CD.",
     "data": {
-      "technology": "mobile",
+      "technology": "javascript",
       "modalidad": "lima",
       "nivel": "mid-level"
     }
@@ -150,7 +150,7 @@
     "ubicacion": "Santiago de Chile",
     "descripcion": "Buscamos un administrador de sistemas con experiencia en Linux, Docker y monitoreo de servidores. Conocimiento en scripting Bash o Python será un plus.",
     "data": {
-      "technology": "mobile",
+      "technology": "react",
       "modalidad": "santiago",
       "nivel": "mid-level"
     }
@@ -162,7 +162,7 @@
     "ubicacion": "Madrid",
     "descripcion": "Estamos buscando un Scrum Master con experiencia en metodologías ágiles y gestión de equipos multidisciplinarios. Certificación Scrum Master deseable.",
     "data": {
-      "technology": "mobile",
+      "technology": "java",
       "modalidad": "madrid",
       "nivel": "mid-level"
     }
@@ -174,7 +174,7 @@
     "ubicacion": "Monterrey",
     "descripcion": "Buscamos un técnico de soporte con habilidades en resolución de incidencias, redes y sistemas operativos. Se requiere atención al detalle y excelente trato con el usuario.",
     "data": {
-      "technology": "mobile",
+      "technology": "python",
       "modalidad": "monterrey",
       "nivel": "junior"
     }

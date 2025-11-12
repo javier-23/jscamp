@@ -416,6 +416,28 @@ footer{
   }
 }
 
+.form-actions{
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+
+  svg{
+    width: 1.3rem;
+    height: 1.3rem;
+    margin-right: 0.5rem;
+    color: var(--text-primary);
+  }
+
+  .btn-secondary{
+    background-color: var(--button-bg-secondary);
+
+    &:hover{
+      background-color: rgb(12, 38, 143);
+      color: #72cff9;
+    }
+  }
+}
+
 /* detalles.html */
 
 .header-right-section{
