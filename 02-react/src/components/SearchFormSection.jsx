@@ -1,7 +1,50 @@
 import { useId, useState } from "react"
 
-export function SearchFormSection({ onSearch, onTextFilter, onReset }) {
+const useSearchForm = ({idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter, onReset, setCleanFilters}) => {
+    const [searchText, setSearchText] = useState('')
+    
+    const handleSubmit = (event) => {
+        event.preventDefault()
 
+        const formData = new FormData(event.currentTarget)
+
+        const filters = {
+            search: formData.get(idText),
+            technology: formData.get(idTechnology),
+            location: formData.get(idLocation),
+            experienceLevel: formData.get(idExperienceLevel),
+        }
+        // Si hay algún filtro aplicado, mostrar el botón de limpiar
+        const hasFilters = Object.values(filters).some(value => value)
+        setCleanFilters(hasFilters)
+
+        onSearch(filters)
+    }
+
+    // Búsqueda de texto en tiempo real
+    const handleChangeText = (event) => {
+        const text = event.target.value
+        setSearchText(text)
+        onTextFilter(text)
+    }
+
+    const handleReset = () => {
+        // Resetear el formulario
+        document.querySelector('.search-form').reset()
+        setCleanFilters(false)
+        // Notificar al padre
+        onReset()
+    }
+
+    return{
+        handleSubmit,
+        handleChangeText, 
+        handleReset
+    }
+
+}
+
+export function SearchFormSection({ onSearch, onTextFilter, onReset }) {
     const idText = useId()
     const idTechnology = useId()
     const idLocation = useId()
@@ -10,32 +53,13 @@ export function SearchFormSection({ onSearch, onTextFilter, onReset }) {
     // Estado para saber qué campo está activo
     const [focusedField, setFocusedField] = useState(null)
 
-    const handleSubmit = (event) => {
-        event.preventDefault()
+    const [ cleanFilters, setCleanFilters ] = useState(false)
 
-        const formData = new FormData(event.target)
-
-        const filters = {
-            search: formData.get(idText),
-            technology: formData.get(idTechnology),
-            location: formData.get(idLocation),
-            experienceLevel: formData.get(idExperienceLevel),
-        }
-
-        onSearch(filters)
-    }
-
-    // Búsqueda de texto en tiempo real
-    const handleChangeText = (event) => {
-        onTextFilter(event.target.value)
-    }
-
-    const handleReset = () => {
-        // Resetear el formulario
-        document.querySelector('.search-form').reset()
-        // Notificar al padre
-        onReset()
-    }
+    const {
+        handleSubmit,
+        handleChangeText,
+        handleReset
+    } = useSearchForm({idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter, onReset, setCleanFilters})
 
     return (
       <section className="seccion-busqueda-empleos">
@@ -88,15 +112,17 @@ export function SearchFormSection({ onSearch, onTextFilter, onReset }) {
 
                   <div className="form-actions">
                     <button type="submit" className="btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/>
                         </svg>
                         Aplicar filtros
                     </button>
-                    <button type="button" className="btn-secondary" onClick={handleReset}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                            </svg>
-                        Limpiar filtros
-                    </button>
+                    { cleanFilters &&
+                        <button type="button" className="btn-secondary" onClick={handleReset}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                            Limpiar filtros
+                        </button>
+                    }
                 </div>
               </form>
           </section>
