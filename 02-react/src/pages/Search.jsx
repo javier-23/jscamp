@@ -1,39 +1,117 @@
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect } from 'react'
 
 import { SearchFormSection } from '../components/SearchFormSection'
 import { Pagination } from '../components/Pagination'
 import { JobListings } from '../components/JobListings'
+import { Spinner } from '../components/Spinner'
 
 const RESULTS_PER_PAGE = 5
 
 // Custom hook
 const useFilters = () => {
-  const [filters, setFilters] = useState({
+  const defaultFilters = {
     technology: '',
     location: '',
     experienceLevel: '',
+  }
+
+  const loadFiltersFromLocalStorage = () => {
+    try {
+      const stringFilters = localStorage.getItem('jobFilters')
+      
+      if(stringFilters != null){
+          const savedFilters = JSON.parse(stringFilters)
+          return savedFilters
+      }
+      else{
+        return defaultFilters
+      }
+    } catch (error) {
+      console.error('Error parsing filters from localStorage:', error)
+      return defaultFilters
+    }
+  }
+
+  const loadTextFromLocalStorage = () => {
+    try {
+      return localStorage.getItem('jobSearchText') || ''
+    } catch (error) {
+      return ''
+    }
+  }
+
+  // Cargar filtros guardados en la URL o localStorage
+  const [filters, setFilters] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    const savedFilters = loadFiltersFromLocalStorage()
+
+    const nextFilters = {}
+  
+    nextFilters.technology = params.get('technology') || savedFilters.technology || ''
+    nextFilters.location = params.get('type') || savedFilters.location || ''
+    nextFilters.experienceLevel = params.get('level') || savedFilters.experienceLevel || ''
+    
+      return nextFilters
   })
-  const [textToFilter, setTextToFilter] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
+
+  // Cargar texto de búsqueda guardado en la URL o localStorage
+  const [textToFilter, setTextToFilter] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    return params.get('text') || loadTextFromLocalStorage() || ''
+  })
+
+  // Estado con la página actual, carga página actual desde la URL
+  const [currentPage, setCurrentPage] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    const pageParam = params.get('page')
+
+    if (!pageParam) return 1
+
+    const page = Number(pageParam)
+
+      if (Number.isNaN(page) || page < 1) {
+        return 1
+      }
+
+      return page
+  })
 
   const [jobs, setJobs] = useState([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  //const {navigateTo} = useRouter()
+
+  // Guardar los filtros en el localStorage
+  useEffect(() => {
+    try{
+      localStorage.setItem('jobFilters', JSON.stringify(filters))
+    } catch (error) {
+      console.error('Error saving filters to localStorage:', error)
+    }
+  }, [filters])
+
+  // Guardar el texto de búsqueda
+  useEffect(() => {
+    try{
+      localStorage.setItem('jobSearchText', textToFilter)
+    } catch (error) {
+      console.error('Error saving search text to localStorage:', error)
+    }
+  }, [textToFilter])
 
   useEffect(() => {
     async function fetchJobs() {
       try {
         setLoading(true)
+        setError(null)
 
         const params = new URLSearchParams()
-        if (textToFilter)
-          params.append('text', textToFilter)
-        if (filters.technology)
-          params.append('technology', filters.technology)
-        if (filters.location)
-          params.append('type', filters.location)
-        if (filters.experienceLevel)
-          params.append('level', filters.experienceLevel)
+        if (textToFilter) params.append('text', textToFilter)
+        if (filters.technology) params.append('technology', filters.technology)
+        if (filters.location) params.append('type', filters.location)
+        if (filters.experienceLevel) params.append('level', filters.experienceLevel)
 
         const offset = (currentPage - 1) * RESULTS_PER_PAGE
         params.append('limit', RESULTS_PER_PAGE)
@@ -42,18 +120,42 @@ const useFilters = () => {
         const queryParams = params.toString()
 
         const response = await fetch(`https://jscamp-api.vercel.app/api/jobs?${queryParams}`)
+        if(!response.ok){
+          throw new Error(`Error ${response.status}`)
+        }
+        
         const json = await response.json()
         
         setJobs(json.data)
         setTotal(json.total)
       } catch (error) {
         console.error('Error fetching jobs:', error)
+        setError(error.message)
       } finally{
         setLoading(false)
       }
     }
     fetchJobs()
-  }, [textToFilter, filters.technology, filters.location, filters.experienceLevel, currentPage])
+  }, [textToFilter, filters, currentPage])
+
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (textToFilter) params.append('text', textToFilter)
+    if (filters.technology) params.append('technology', filters.technology)
+    if (filters.location) params.append('type', filters.location)
+    if (filters.experienceLevel) params.append('level', filters.experienceLevel)
+    
+    if(currentPage > 1){
+      params.append('page', currentPage)
+    }
+    const newUrl = params.toString()
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname
+
+    //navigateTo(newUrl)
+
+  }, [textToFilter, filters, currentPage])
+
 
   // Calcular el total de páginas redondeando hacia arriba
   const totalPages = Math.ceil(total / RESULTS_PER_PAGE)
@@ -75,13 +177,17 @@ const useFilters = () => {
   }
 
   const handleReset = () => {
-    setFilters({
-      technology: '',
-      location: '',
-      experienceLevel: '',
-    })
+    setFilters(defaultFilters)
     setTextToFilter('')
+    localStorage.removeItem('jobFilters')
+    localStorage.removeItem('jobSearchText')
     setCurrentPage(1)
+  }
+
+  const handleRetry = () => {
+    setError(null)
+    setCurrentPage(1)
+    window.location.reload()
   }
 
   return {
@@ -93,7 +199,11 @@ const useFilters = () => {
     handleTextFilter,
     handleReset,
     jobs,
-    total
+    total,
+    filters,
+    textToFilter,
+    error,
+    handleRetry
   }
 }
 
@@ -108,24 +218,84 @@ export function SearchPage() {
     handleTextFilter,
     handleReset,
     jobs,
-    total
+    total,
+    filters,
+    textToFilter,
+    error,
+    handleRetry
   } = useFilters()
+
+  const title = loading 
+    ? 'Cargando...' 
+    : error 
+    ? 'Error al cargar' 
+    : `Resultados: ${total}, Página ${currentPage} - DevJobs`
 
   return (
     <main>
-        <SearchFormSection onSearch={handleSearch} onTextFilter={handleTextFilter} onReset={handleReset}/>
+      <title>{title}</title>
+      <meta name="description" content="Encuentra las mejores ofertas de trabajo para desarrolladores en DevJobs."></meta>
+      
+      {/* Formulario de búsqueda */}
+        <SearchFormSection 
+          onSearch={handleSearch} 
+          onTextFilter={handleTextFilter} 
+          onReset={handleReset}
+          initialFilters={filters}
+          initialText={textToFilter}
+          />
         
         <section>
-          {
-            loading ? <p style={{"textAlign": "center", "marginTop": "2rem", "color": "var(--text-light)"}}>Cargando trabajos...</p> : <JobListings jobs={jobs} />   
-          }
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-          {total > 0 &&
-              <p style={{"display": "flex", "justifyContent": "center", "alignItems": "center", "marginBottom": "2rem", "color": "var(--text-light)"}}>
+
+          {/* Spinner de carga */}
+          {loading && <Spinner/>}
+
+          {/* Mensaje de error */}
+          {error && !loading &&(
+            <div style={{
+              textAlign: 'center',
+              padding: '2rem',
+              color: 'var(--text-light)'
+            }}>
+              <h2 style={{ color: '#ef4444', marginBottom: '1rem' }}>
+                Error al cargar los trabajos
+              </h2>
+              <p style={{ marginBottom: '1.5rem' }}>{error}</p>
+              <button 
+                onClick={handleRetry}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: 'var(--primary-light)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
+                Reintentar
+              </button>
+            </div>
+          )}
+
+          {/* Listado de trabajos */}
+          {!loading && !error && <JobListings jobs={jobs}/>}
+          
+          {/* Paginación */}
+          {!loading && !error && totalPages > 1 && (
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+          )}
+
+          {/* Texto informando con el rango de trabajos mostrados */}
+          {!loading && !error && total > 0 && (
+              <p 
+                style={{"display": "flex", "justifyContent": "center", 
+                        "alignItems": "center", "marginBottom": "2rem", 
+                        "marginTop": "1rem", "color": "var(--text-light)"}}>
                   Mostrando {(currentPage - 1) * RESULTS_PER_PAGE + 1} -{' '}
                   {Math.min(currentPage * RESULTS_PER_PAGE, total)} de {total} trabajos
               </p>
-          }
+          )}
         </section>
     </main>
   )

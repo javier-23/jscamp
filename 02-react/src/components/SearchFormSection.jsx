@@ -1,7 +1,8 @@
-import { useId, useState } from "react"
+import { useEffect, useId, useState, useRef } from "react"
 
-const useSearchForm = ({idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter, onReset, setCleanFilters}) => {
-    const [searchText, setSearchText] = useState('')
+const useSearchForm = ({idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter, onReset, setCleanFilters, initialText, setTechnology, setLocation, setExperienceLevel}) => {
+    const [searchText, setSearchText] = useState(initialText || '')
+    const timeoutId = useRef(null)
     
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -25,12 +26,23 @@ const useSearchForm = ({idText, idTechnology, idLocation, idExperienceLevel, onS
     const handleChangeText = (event) => {
         const text = event.target.value
         setSearchText(text)
-        onTextFilter(text)
+
+        //Debounce: cancelar timeout anterior
+        if(timeoutId.current) {
+            clearTimeout(timeoutId.current)
+        }
+
+        timeoutId.current = setTimeout(() => {
+            onTextFilter(text)
+        }, 500)
     }
 
     const handleReset = () => {
         // Resetear el formulario
-        document.querySelector('.search-form').reset()
+        setSearchText('')
+        setTechnology('')
+        setLocation('')
+        setExperienceLevel('')
         setCleanFilters(false)
         // Notificar al padre
         onReset()
@@ -39,12 +51,13 @@ const useSearchForm = ({idText, idTechnology, idLocation, idExperienceLevel, onS
     return{
         handleSubmit,
         handleChangeText, 
-        handleReset
+        handleReset,
+        searchText
     }
 
 }
 
-export function SearchFormSection({ onSearch, onTextFilter, onReset }) {
+export function SearchFormSection({ onSearch, onTextFilter, onReset, initialFilters, initialText }) {
     const idText = useId()
     const idTechnology = useId()
     const idLocation = useId()
@@ -52,14 +65,30 @@ export function SearchFormSection({ onSearch, onTextFilter, onReset }) {
 
     // Estado para saber qué campo está activo
     const [focusedField, setFocusedField] = useState(null)
+    const [cleanFilters, setCleanFilters ] = useState(false)
 
-    const [ cleanFilters, setCleanFilters ] = useState(false)
+    // Estados controlados para los selects
+    const [technology, setTechnology] = useState(initialFilters.technology || '')
+    const [location, setLocation] = useState(initialFilters.location || '')
+    const [experienceLevel, setExperienceLevel] = useState(initialFilters.experienceLevel || '')
 
     const {
         handleSubmit,
         handleChangeText,
-        handleReset
-    } = useSearchForm({idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter, onReset, setCleanFilters})
+        handleReset,
+        searchText
+    } = useSearchForm({idText, idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter, onReset, setCleanFilters, initialText, setTechnology, setLocation, setExperienceLevel})
+
+    useEffect(() => {
+        const hasFilters = initialText || 
+                          initialFilters.technology || 
+                          initialFilters.location || 
+                          initialFilters.experienceLevel
+        setCleanFilters(!!hasFilters)
+        setTechnology(initialFilters.technology || '')
+        setLocation(initialFilters.location || '')
+        setExperienceLevel(initialFilters.experienceLevel || '')
+    }, [initialFilters, initialText])
 
     return (
       <section className="seccion-busqueda-empleos">
@@ -79,11 +108,16 @@ export function SearchFormSection({ onSearch, onTextFilter, onReset }) {
                             name={idText} id="empleos-search-input" type="text"
                             placeholder="Buscar trabajos, empresas o habilidades"
                             onChange={handleChangeText}
+                            value={searchText}
                         />
                   </div>
 
                   <div className="filtros-busqueda-empleo">
-                      <select name={idTechnology} id="filter-technology">
+                      <select 
+                        name={idTechnology} 
+                        id="filter-technology" 
+                        value={technology}
+                        onChange={e => setTechnology(e.target.value)}>
                           <option value="">Tecnología</option>
                           <option value="javascript">JavaScript</option>
                           <option value="python">Python</option>
@@ -92,7 +126,11 @@ export function SearchFormSection({ onSearch, onTextFilter, onReset }) {
                           <option value="node">Node.js</option>
                       </select>
 
-                      <select name={idLocation} id="filter-location">
+                      <select
+                        name={idLocation} 
+                        id="filter-location" 
+                        value={location}
+                        onChange={e => setLocation(e.target.value)}>
                           <option value="">Ubicación</option>
                           <option value="remoto">Remoto</option>
                           <option value="hibrido">Híbrido</option>
@@ -101,7 +139,11 @@ export function SearchFormSection({ onSearch, onTextFilter, onReset }) {
                           <option value="londres">Londres</option>
                       </select>
 
-                      <select name={idExperienceLevel} id="filter-experience-level">
+                      <select 
+                        name={idExperienceLevel} 
+                        id="filter-experience-level" 
+                        value={experienceLevel}
+                        onChange={e => setExperienceLevel(e.target.value)}>
                           <option value="">Nivel de experiencia</option>
                           <option value="junior">Junior</option>
                           <option value="mid">Mid-level</option>

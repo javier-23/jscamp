@@ -334,6 +334,8 @@ footer{
       border-bottom: 1px solid rgba(255, 255, 255, .3);
       display: flex;
       text-align: left;
+      justify-content: space-between;
+      align-items: center;
 
       &.is-hidden{
         display: none;
