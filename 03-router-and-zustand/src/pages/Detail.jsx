@@ -1,9 +1,10 @@
 import { useParams, useNavigate } from "react-router"
-import { useState, useEffect, use } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "../components/Link.jsx"
 import snarkdown from "snarkdown" // Convierte markdown a HTML
 import styles from "./Detail.module.css"
 import { useAuthStore } from "../store/authStore.js"
+import { useFavoritesStore } from "../store/favoritesStore.js"
 
 function JobSection({ title, content }) {
     let html = snarkdown(content ?? '') // Convierte markdown a HTML
@@ -20,6 +21,19 @@ function JobSection({ title, content }) {
             }/>
 
         </section>
+    )
+}
+
+function DetailFavoriteButton({ jobId }) {
+    const { isFavorite, toogleFavorite } = useFavoritesStore()
+
+    return (
+        <button 
+            onClick={() => {toogleFavorite(jobId)}}
+            aria-label={isFavorite(jobId) ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+            >
+            {isFavorite(jobId) ? '❤️' : '🤍'}
+        </button>
     )
 }
 
@@ -104,6 +118,7 @@ export default function JobDetail() {
                     <button className={styles.applyButton} disabled={!isLoggedIn}>
                        {isLoggedIn ? 'Aplicar a esta oferta' : 'Inicia sesión para aplicar'}
                     </button>
+                    <DetailFavoriteButton jobId={job.id} />
                 </div>
             </header>
 

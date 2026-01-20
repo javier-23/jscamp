@@ -1,10 +1,16 @@
 import {Link} from './Link'
 import { NavLink } from 'react-router'
 import { useAuthStore } from '../store/authStore.js'
+import { useFavoritesStore } from '../store/favoritesStore.js'
 
 function Header( ) {
     const { isLoggedIn, handleLogin, handleLogOut } = useAuthStore()
+    const { clearFavorites } = useFavoritesStore()
 
+    const logout = () => {
+        handleLogOut()
+        clearFavorites()
+    }
 
     return (
         <header>
@@ -46,7 +52,7 @@ function Header( ) {
 
             <div>
                 {isLoggedIn 
-                    ? <button className="btn-login" onClick={handleLogOut}>Cerrar sesión</button>
+                    ? <button className="btn-login" onClick={logout}>Cerrar sesión</button>
                     : <button className="btn-login" onClick={handleLogin}>Iniciar sesión</button> 
                 }
             </div>

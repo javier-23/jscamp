@@ -2,12 +2,15 @@ import { useState } from "react"
 import { Link } from "../components/Link.jsx"
 import styles from "./JobCard.module.css"
 import { useFavoritesStore } from "../store/favoritesStore.js"
+import { useAuthStore } from "../store/authStore.js"
 
 function JobCardFavoriteButton({ jobId }) {
-    const {toogleFavorite, isFavorite} = useFavoritesStore()
+    const { isLoggedIn } = useAuthStore()
+    const { isFavorite, toogleFavorite } = useFavoritesStore()
     
     return (
-        <button 
+        <button
+            disabled={!isLoggedIn}
             onClick={(e) => {
                 e.stopPropagation()
                 toogleFavorite(jobId)
@@ -19,9 +22,9 @@ function JobCardFavoriteButton({ jobId }) {
     )
 }
 
-export function JobCard({job}){
-
+function JobCardApplyButton({ jobId }) {
     const [isApplied, setIsApplied] = useState(false)
+    const { isLoggedIn } = useAuthStore()
 
     const handleApplyClick = (e) => {
         e.stopPropagation() // Evitar que el click en el botón se propague al enlace padre
@@ -30,6 +33,13 @@ export function JobCard({job}){
 
     const buttonClasses = isApplied ? 'button-apply-job is-applied' : 'button-apply-job'
     const buttonText = isApplied ? 'Aplicado' : 'Aplicar'
+
+    return (
+        <button disabled={!isLoggedIn} className={buttonClasses} onClick={handleApplyClick}>{buttonText}</button>
+    )
+}
+
+export function JobCard({job}){
     
     return (
         <article 
@@ -51,7 +61,7 @@ export function JobCard({job}){
                     <p>{job.descripcion}</p>
                 </div>
             </Link>
-            <button className={buttonClasses} onClick={handleApplyClick}>{buttonText}</button>
+            <JobCardApplyButton jobId={job.id} />
             <JobCardFavoriteButton jobId={job.id} />
         </article>
     )    
