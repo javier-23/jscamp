@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+// Para manejar los parámetros de búsqueda en la URL
 import { useSearchParams } from 'react-router'
 
 import { SearchFormSection } from '../components/SearchFormSection'

@@ -1,4 +1,3 @@
-import {Link} from './Link'
 import { NavLink } from 'react-router'
 import { useAuthStore } from '../store/authStore.js'
 import { useFavoritesStore } from '../store/favoritesStore.js'
@@ -28,7 +27,7 @@ function Header( ) {
             <nav aria-label="Navegación principal">
                 <ul>
                     <li>
-                        <Link href="/">Inicio</Link>
+                        <NavLink to="/">Inicio</NavLink>
                     </li>
                     <li>
                         <NavLink 
@@ -38,7 +37,7 @@ function Header( ) {
                         >Empleos</NavLink>
                     </li>
                     <li>
-                        <Link href="#about">Acerca</Link>
+                        <NavLink to="#about">Acerca</NavLink>
                     </li>
                     <li>
                         <NavLink
