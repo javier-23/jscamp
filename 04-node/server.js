@@ -1,5 +1,6 @@
-import { error } from 'node:console';
 import { createServer} from 'node:http';
+import { json } from 'node:stream/consumers';
+import { randomUUID } from 'node:crypto';
 
 process.loadEnvFile()
 
@@ -16,27 +17,49 @@ const users = [
     {id: 2, name: 'Bob'},
 ];
 
-const server = createServer((req, res) => {
+const server = createServer(async (req, res) => {
     const {method, url} = req;
+
+    const [pathname, querystring] = url.split('?')
+
+    const searchParams = new URLSearchParams(querystring);
 
     if(method === 'GET'){
         res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 
-        if(req.url === '/'){
+        if(pathname === '/'){
             return res.end('¡Hola, mundo!');
         }
-        if(req.url === '/users'){
-            return sendJson(res, 200, users);
+        if(pathname === '/users'){
+            const limit = Number(searchParams.get('limit')) || users.length;
+            const offset = Number(searchParams.get('offset')) || 0;
+
+            const paginatedUsers = users.slice(offset, offset + limit);
+
+            return sendJson(res, 200, paginatedUsers);
         }
 
-        if(req.url === '/health'){
+        if(pathname === '/health'){
             return sendJson(res, 200, {status: 'ok', uptime: process.uptime()});
         }
     }
 
     if (method === 'POST'){
-        if(url === '/users'){
+        if(pathname === '/users'){
+            const body = await json(req);
             
+            if(!body || !body.name){
+                return sendJson(res, 400, {error: 'Bad Request', message: 'El campo "name" es obligatorio'});
+            }
+
+            const newUser = {
+                name: body.name,
+                id: randomUUID(),
+            }
+
+            users.push(newUser);
+
+            return sendJson(res, 201, {message: 'Usuario creado exitosamente'});
         }
     }
 
