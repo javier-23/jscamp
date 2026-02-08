@@ -1,4 +1,4 @@
-// Punto de entrada.
+// Punto de entrada. Patrón MVC
 import express from 'express'
 import { DEFAULTS } from './config.js';
 import { corsMiddleware } from './middlewares/cors.js';
@@ -12,6 +12,10 @@ app.use(express.json()); // Middleware para parsear JSON
 
 app.use('/jobs', jobsRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+if(process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;

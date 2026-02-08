@@ -6,7 +6,7 @@ const ACCEPTED_ORIGINS = ['http://localhost:5173'];
 export const corsMiddleware = ({ acceptedOrigin = ACCEPTED_ORIGINS } = {}) => {
     return cors({
         origin: (origin, callback) => { // 
-        if(acceptedOrigin.includes(origin)) {
+        if(!origin || acceptedOrigin.includes(origin)) {
             return callback(null, true);
         }
         return callback(new Error('Origen no permitido por CORS'));
