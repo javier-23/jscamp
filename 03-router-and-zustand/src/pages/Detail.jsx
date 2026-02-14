@@ -50,7 +50,7 @@ export default function JobDetail() {
     useEffect(() => {
         if (!jobId) return
 
-        fetch(`https://jscamp-api.vercel.app/api/jobs/${jobId}`)
+        fetch(`http://localhost:1234/jobs/${jobId}`)
             .then((res) => {
                 if(!res.ok){
                     throw new Error(`Job Not Found ${res.status}`)
@@ -82,7 +82,7 @@ export default function JobDetail() {
             <div className={styles.notFound}>
                 <h1>Oferta no encontrada</h1>
                 <p>Puede que esta oferta haya caducado o que la URL no sea correcta.</p>
-                <button className={styles.backButton} onClick={() => navigate('/jobs')}>
+                <button className={styles.backButton} onClick={() => navigate('/search')}>
                     Volver a la lista de empleos
                 </button>
             </div>

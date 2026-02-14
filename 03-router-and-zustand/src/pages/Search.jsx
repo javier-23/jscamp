@@ -252,7 +252,7 @@ export default function SearchPage() {
           onReset={handleReset}
           initialFilters={filters}
           initialText={textToFilter}
-          />
+        />
         
         <section>
 

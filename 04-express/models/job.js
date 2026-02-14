@@ -9,8 +9,8 @@ export class JobModel {
         if (text) {
             const searchTerm = text.toLowerCase()
             filteredJobs = filteredJobs.filter(job => 
-            job.title.toLowerCase().includes(searchTerm) ||
-            job.description.toLowerCase().includes(searchTerm)
+            job.titulo?.toLowerCase().includes(searchTerm) ||
+            job.descripcion?.toLowerCase().includes(searchTerm)
             );
         }
 

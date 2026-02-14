@@ -23,9 +23,7 @@ export class JobController{
             return res.status(404).json({ message: 'Job not found' });
         }
 
-        return res.json({
-            job
-        });
+        return res.json(job);
     }
 
     static async createJob(req, res){
