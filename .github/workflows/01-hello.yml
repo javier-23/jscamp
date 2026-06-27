@@ -14,3 +14,12 @@ jobs:
         run: date
       - name: Listar archivos
         run: ls -la
+
+  repo-files:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Descargar codigo del repo
+        uses: actions/checkout@v4
+
+      - name: Listar archivos del repo
+        run: ls -la
