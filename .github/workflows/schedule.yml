@@ -1,0 +1,11 @@
+name: 03 - Schedule
+on:
+  schedule:
+    - cron: '0 0 * * *' # Ejecutar todos los días a medianoche
+
+jobs:
+  scheduled-job:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Saludar
+        run: echo "Hola, Mundo! Este es un trabajo programado."

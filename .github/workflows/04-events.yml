@@ -1,0 +1,21 @@
+name: 04 - Events
+
+on:
+    issues:
+        types: [opened, edited, closed]
+    issue_comment:
+        types: [created]
+
+jobs:
+    inspect-event:
+        runs-on: ubuntu-24.04
+        steps:
+            - name: Inspeccionar evento
+              run: |
+                echo "Tipo de evento: ${{ github.event_name }}"
+                echo "Acción del evento: ${{ github.event.action }}"
+                echo "Número de issue: ${{ github.event.issue.number }}"
+                echo "Título del issue: ${{ github.event.issue.title }}"
+                echo "Cuerpo del issue: ${{ github.event.issue.body }}"
+                echo "Usuario que creó el issue: ${{ github.event.issue.user.login }}"
+                echo "Número de comentarios en el issue: ${{ github.event.issue.comments }}"
